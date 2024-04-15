@@ -27,17 +27,17 @@ pipeline {
             }
         }
 
-        stage('Deploy Spring Boot to DEV') {
-            steps {
-                echo 'Deploying and cleaning springboot'
-                sh 'docker image pull ledung94/springboot'
-                sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
-                sh 'docker network create dev || echo "this network exists"'
-                sh 'echo y | docker container prune '
+        // stage('Deploy Spring Boot to DEV') {
+        //     steps {
+        //         echo 'Deploying and cleaning springboot'
+        //         sh 'docker image pull ledung94/springboot'
+        //         sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
+        //         sh 'docker network create dev || echo "this network exists"'
+        //         sh 'echo y | docker container prune '
 
-                sh 'docker container run -d --rm --name ledung94/springboot -p 8081:8080 --network dev ledung94/springboot'
-            }
-        }
+        //         sh 'docker container run -d --rm --name ledung94/springboot -p 8081:8080 --network dev ledung94/springboot'
+        //     }
+        // }
 
         // stage('Deploy MySQL to DEV') {
         //     steps {
