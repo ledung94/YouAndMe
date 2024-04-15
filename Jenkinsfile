@@ -20,6 +20,12 @@ pipeline {
         }
 
         stage('Packaging/Pushing imagae') {
+            stage('Check Environment Variables') {
+                steps {
+                    echo "MYSQL_ROOT_LOGIN: ${env.MYSQL_ROOT_LOGIN}"
+                    echo "MYSQL_ROOT_LOGIN_PSW: ${env.MYSQL_ROOT_LOGIN_PSW}"
+                }
+            }
 
             steps {
                 echo 'Packaging/Pushing..'
