@@ -17,6 +17,16 @@ pipeline {
             }
         }
 
+        stage('Packaging/Pushing imagae') {
+            steps {
+                echo 'Packaging/Pushing..'
+                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                    sh 'docker build -t ledung94/springboot .'
+                    sh 'docker push ledung94/springboot'
+                }
+            }
+        }
+
         stage('Deploy MySQL to DEV') {
             steps {
                 echo 'Deploying and cleaning msql'
@@ -37,16 +47,6 @@ pipeline {
                 sh 'mvn --version'
                 sh 'java -version'
                 sh 'mvn clean package -Dmaven.test.failure.ignore=true'
-            }
-        }
-
-        stage('Packaging/Pushing imagae') {
-            steps {
-                echo 'Packaging/Pushing..'
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker build -t ledung94/springboot .'
-                    sh 'docker push ledung94/springboot'
-                }
             }
         }
 
