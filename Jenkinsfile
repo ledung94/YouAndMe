@@ -17,16 +17,6 @@ pipeline {
             }
         }
 
-        stage('Build with Maven') {
-            steps {
-                echo 'Building..'
-                sh 'mvn --version'
-                sh 'java -version'
-                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
-            }
-        }
-
-
         stage('Packaging/Pushing imagae') {
             steps {
                 echo 'Packaging/Pushing..'
@@ -61,6 +51,15 @@ pipeline {
                 sh 'echo y | docker container prune '
 
                 sh 'docker container run -d --rm --name ledung94/springboot -p 8081:8080 --network dev ledung94/springboot'
+            }
+        }
+
+        stage('Build with Maven') {
+            steps {
+                echo 'Building..'
+                sh 'mvn --version'
+                sh 'java -version'
+                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
             }
         }
     }
