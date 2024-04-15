@@ -32,7 +32,7 @@ pipeline {
 
         stage('Deploy MySQL to DEV') {
             steps {
-                echo 'Deploying and cleaning'
+                echo 'Deploying and cleaning msql'
                 sh 'docker image pull mysql:8.0'
                 sh 'docker network create dev || echo "this network exists"'
                 sh 'docker container stop khalid-mysql || echo "this container does not exist" '
@@ -47,7 +47,7 @@ pipeline {
 
         stage('Deploy Spring Boot to DEV') {
             steps {
-                echo 'Deploying and cleaning'
+                echo 'Deploying and cleaning springboot'
                 sh 'docker image pull ledung94/springboot'
                 sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
                 sh 'docker network create dev || echo "this network exists"'
