@@ -1,4 +1,4 @@
-package com.example.YouAndMe.common;
+package com.example.YouAndMe.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
