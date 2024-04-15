@@ -17,16 +17,6 @@ pipeline {
             }
         }
 
-        stage('Packaging/Pushing imagae') {
-            steps {
-                echo 'Packaging/Pushing..'
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker build -t ledung94/springboot .'
-                    sh 'docker push ledung94/springboot'
-                }
-            }
-        }
-
         stage('Deploy MySQL to DEV') {
             steps {
                 echo 'Deploying and cleaning msql'
@@ -39,6 +29,24 @@ pipeline {
                 sh "docker run --name khalid-mysql --rm --network dev -v khalid-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql:8.0 "
                 sh 'sleep 20'
                 sh "docker exec -i khalid-mysql mysql --user=root --password=${MYSQL_ROOT_LOGIN_PSW} < script"
+            }
+        }
+        stage('Build with Maven') {
+            steps {
+                echo 'Building..'
+                sh 'mvn --version'
+                sh 'java -version'
+                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
+            }
+        }
+
+        stage('Packaging/Pushing imagae') {
+            steps {
+                echo 'Packaging/Pushing..'
+                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                    sh 'docker build -t ledung94/springboot .'
+                    sh 'docker push ledung94/springboot'
+                }
             }
         }
 
@@ -54,14 +62,6 @@ pipeline {
             }
         }
 
-        stage('Build with Maven') {
-            steps {
-                echo 'Building..'
-                sh 'mvn --version'
-                sh 'java -version'
-                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
-            }
-        }
     }
 
     post {
