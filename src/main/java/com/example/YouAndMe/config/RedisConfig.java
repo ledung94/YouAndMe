@@ -61,13 +61,13 @@ public class RedisConfig {
     //     System.out.println("Value Serializer: " + valueSerializer);
     //     return template;
     // }
-    @Bean
-    @Primary
-    Jedis jedisConnection() {
-        Jedis jedis = new Jedis(redisHost, redisPort, redisTimeout);
-        System.out.println("Connected to redis");
-        // Xác thực (nếu cần)
-        // jedis.auth("your_password");
-        return jedis;
-    }
+    // @Bean
+    // @Primary
+    // Jedis jedisConnection() {
+    //     Jedis jedis = new Jedis(redisHost, redisPort, redisTimeout);
+    //     System.out.println("Connected to redis");
+    //     // Xác thực (nếu cần)
+    //     // jedis.auth("your_password");
+    //     return jedis;
+    // }
 }

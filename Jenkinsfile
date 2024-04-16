@@ -39,7 +39,7 @@ pipeline {
                 sh 'echo y | docker container prune '
                 sh 'docker volume rm mysql-data || echo "no volume"'
 
-                sh "docker run --name mysql --rm --network my-dev-network -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql"
+                sh "docker run --name mysql --rm --network my-dev-network -p 3306:3306 -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql"
                 sh 'sleep 20'
                 sh "docker exec -i mysql mysql --user=root --password=${MYSQL_ROOT_LOGIN_PSW} < script"
             }
