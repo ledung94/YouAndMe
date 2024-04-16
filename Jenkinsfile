@@ -10,6 +10,16 @@ pipeline {
     }
 
     stages {
+
+        stage('Build with Maven') {
+            steps {
+                echo 'Building..'
+                sh 'mvn --version'
+                sh 'java -version'
+                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
+            }
+        }
+
         stage('Packaging/Pushing imagae') {
             steps {
                 echo 'Packaging/Pushing..'
@@ -20,53 +30,32 @@ pipeline {
             }
         }
 
-        // stage('Deploy Spring Boot to DEV') {
-        //     steps {
-        //         echo 'Deploying and cleaning springboot'
-        //         sh 'docker image pull ledung94/springboot'
-        //         sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
-        //         sh 'docker network create dev || echo "this network exists"'
-        //         sh 'echo y | docker container prune '
+        stage('Deploy MySQL to DEV') {
+            steps {
+                echo 'Deploying and cleaning msql'
+                sh 'docker image pull mysql:8.0'
+                sh 'docker network create dev || echo "this network exists"'
+                sh 'docker container stop my-mysql || echo "this container does not exist" '
+                sh 'echo y | docker container prune '
+                sh 'docker volume rm my-mysql-data || echo "no volume"'
 
-        //         sh 'docker container run -d --rm --name ledung94/springboot -p 8081:8080 --network dev ledung94/springboot'
-        //     }
-        // }
+                sh "docker run --name my-mysql --rm --network dev -v my-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql:8.0 "
+                sh 'sleep 20'
+                sh "docker exec -i my-mysql mysql --user=root --password=${MYSQL_ROOT_LOGIN_PSW} < script"
+            }
+        }
 
-        // stage('Deploy MySQL to DEV') {
-        //     steps {
-        //         echo 'Deploying and cleaning msql'
-        //         sh 'docker image pull mysql:8.0'
-        //         sh 'docker network create dev || echo "this network exists"'
-        //         sh 'docker container stop khalid-mysql || echo "this container does not exist" '
-        //         sh 'echo y | docker container prune '
-        //         sh 'docker volume rm khalid-mysql-data || echo "no volume"'
+        stage('Deploy Spring Boot to DEV') {
+            steps {
+                echo 'Deploying and cleaning springboot'
+                sh 'docker image pull ledung94/springboot'
+                sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
+                sh 'docker network create dev || echo "this network exists"'
+                sh 'echo y | docker container prune '
 
-        //         sh "docker run --name khalid-mysql --rm --network dev -v khalid-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql:8.0 "
-        //         sh 'sleep 20'
-        //         sh "docker exec -i khalid-mysql mysql --user=root --password=${MYSQL_ROOT_LOGIN_PSW} < script"
-        //     }
-        // }
-        // stage('Build with Maven') {
-        //     steps {
-        //         echo 'Building..'
-        //         sh 'mvn --version'
-        //         sh 'java -version'
-        //         sh 'mvn clean package -Dmaven.test.failure.ignore=true'
-        //     }
-        // }
-
-        // stage('Deploy Spring Boot to DEV') {
-        //     steps {
-        //         echo 'Deploying and cleaning springboot'
-        //         sh 'docker image pull ledung94/springboot'
-        //         sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
-        //         sh 'docker network create dev || echo "this network exists"'
-        //         sh 'echo y | docker container prune '
-
-        //         sh 'docker container run -d --rm --name ledung94/springboot -p 8081:8080 --network dev ledung94/springboot'
-        //     }
-        // }
-
+                sh 'docker container run -d --rm --name ledung94/springboot -p 8081:8080 --network dev ledung94/springboot'
+            }
+        }
     }
 
     post {
