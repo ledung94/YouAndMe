@@ -34,12 +34,12 @@ pipeline {
             steps {
                 echo 'Deploying and cleaning msql'
                 sh 'docker image pull mysql:8.0'
-                sh 'docker network create dev || echo "this network exists"'
+                sh 'docker network create my-dev-network || echo "this network exists"'
                 sh 'docker container stop mysql || echo "this container does not exist" '
                 sh 'echo y | docker container prune '
                 sh 'docker volume rm mysql-data || echo "no volume"'
 
-                sh "docker run --name mysql --rm --network dev -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql:8.0 "
+                sh "docker run --name mysql --rm --network my-dev-network -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_LOGIN_PSW} -e MYSQL_DATABASE=db_example  -d mysql:8.0 "
                 sh 'sleep 20'
                 sh "docker exec -i mysql mysql --user=root --password=${MYSQL_ROOT_LOGIN_PSW} < script"
             }
