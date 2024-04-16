@@ -50,10 +50,10 @@ pipeline {
                 echo 'Deploying and cleaning springboot'
                 sh 'docker image pull ledung94/springboot'
                 sh 'docker container stop ledung94/springboot || echo "this container does not exist" '
-                sh 'docker network create dev || echo "this network exists"'
+                sh 'docker network create my-dev-network || echo "this network exists"'
                 sh 'echo y | docker container prune '
 
-                sh 'docker container run -d --rm --name ledung94-springboot -p 8081:8080 --network dev ledung94/springboot'
+                sh 'docker container run -d --rm --name ledung94-springboot -p 8081:8080 --network my-dev-network ledung94/springboot'
             }
         }
     }
