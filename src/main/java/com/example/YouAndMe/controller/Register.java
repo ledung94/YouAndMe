@@ -26,7 +26,7 @@ public class Register {
     private PasswordEncoder encoder;
     
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         if (userService.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
